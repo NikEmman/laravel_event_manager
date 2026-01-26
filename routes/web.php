@@ -6,11 +6,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('home');
 });
-Route::get('/signin', function () {
-    return view('signin');
+Route::get('/login', function () {
+    return view('login');
 });
-Route::get('/signon', function () {
-    return view('signon');
+Route::get('/register', function () {
+    return view('register');
 });
 Route::post('/register',[UserController::class,'register']);
 Route::post('/logout',[UserController::class,'logout']);
