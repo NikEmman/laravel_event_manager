@@ -6,7 +6,7 @@
     <title>@yield('title', 'Event Manager')</title>
 </head>
 <body>
-    {{-- @include('partials._navbar')  --}}
+    @include('partials._navbar') 
     @if (session('success'))
         <div style="color: green; background: #e6fffa; padding: 10px;">{{ session('success') }}</div>
     @endif
