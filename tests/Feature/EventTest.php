@@ -22,6 +22,8 @@ class EventTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Grand Ballroom');
     }
+
+    // Create event action
     public function test_a_guest_cannot_create_an_event()
     {
         // Create a Space (required for the foreign key)
@@ -187,5 +189,83 @@ class EventTest extends TestCase
         $response = $this->get("/events/{$event->id}/edit");
 
         $response->assertRedirect('/login');
+    }
+
+    // Put action and route tests
+    public function test_an_authenticated_user_can_update_an_event()
+    {
+        $user = User::factory()->create();
+        $space = Space::create(['name' => 'Initial Space', 'address' => '123 Lane']);
+
+        // Create the existing event
+        $event = Event::create([
+            'title' => 'Original Title',
+            'description' => 'Original Description',
+            'space_id' => $space->id,
+            'start_date' => now()->addDays(1)->format('Y-m-d H:i'),
+            'end_date' => now()->addDays(1)->addHours(2)->format('Y-m-d H:i'),
+        ]);
+
+        // Data to update
+        $updatedData = [
+            'title' => 'New Improved Title',
+            'description' => 'Updated Description',
+            'space_id' => $space->id,
+            'start_date' => now()->addDays(2)->format('Y-m-d H:i'),
+            'end_date' => now()->addDays(2)->addHours(2)->format('Y-m-d H:i'),
+        ];
+
+        // Sent put request as auth'ed user
+        $response = $this->actingAs($user)->put("/events/{$event->id}", $updatedData);
+
+
+        $response->assertRedirect("/events/{$event->id}");
+        $this->assertDatabaseHas('events', [
+            'id' => $event->id,
+            'title' => 'New Improved Title'
+        ]);
+    }
+
+    public function test_a_guest_cannot_update_an_event()
+    {
+        $space = Space::create(['name' => 'Space', 'address' => 'Addr']);
+        $event = Event::create([
+            'title' => 'Stable Title',
+            'space_id' => $space->id,
+            'start_date' => now()->addDays(1)->format('Y-m-d H:i'),
+            'end_date' => now()->addDays(1)->addHours(1)->format('Y-m-d H:i'),
+        ]);
+
+        // Try to update as guest
+        $response = $this->put("/events/{$event->id}", ['title' => 'Hacked Title']);
+
+        $response->assertRedirect('/login');
+        // Ensure the title is still the original in the DB
+        $this->assertDatabaseHas('events', ['title' => 'Stable Title']);
+    }
+
+    public function test_update_validation_errors_redirect_back_to_edit_form()
+    {
+        $user = User::factory()->create();
+        $space = Space::create(['name' => 'Space', 'address' => 'Addr']);
+        $event = Event::create([
+            'title' => 'Valid Event',
+            'space_id' => $space->id,
+            'start_date' => now()->addDays(1)->format('Y-m-d H:i'),
+            'end_date' => now()->addDays(1)->addHours(1)->format('Y-m-d H:i'),
+        ]);
+
+        // Send invalid data (end date before start date)
+        $response = $this->actingAs($user)
+            ->from("/events/{$event->id}/edit")
+            ->put("/events/{$event->id}", [
+                'title' => '', // Required field missing
+                'space_id' => $space->id,
+                'start_date' => now()->addDays(5)->format('Y-m-d H:i'),
+                'end_date' => now()->addDays(2)->format('Y-m-d H:i'),
+            ]);
+
+        $response->assertRedirect("/events/{$event->id}/edit");
+        $response->assertSessionHasErrors(['title', 'end_date']);
     }
 }
