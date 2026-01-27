@@ -42,4 +42,12 @@ class EventController extends Controller
 
         return view('events.show', ['event' => $event]);
     }
+
+    // Delete action
+    public function destroy(Event $event)
+    {
+        $event->delete();
+
+        return redirect('/')->with('success', 'Event deleted successfully!');
+    }
 }

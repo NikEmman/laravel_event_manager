@@ -5,7 +5,7 @@
 @section('content')
     <div class="event-details">
         <a href="/">← Back to Events</a>
-        
+
         <h1>{{ $event->title }}</h1>
         <p class="description">{{ $event->description ?: 'No description provided.' }}</p>
 
@@ -23,6 +23,13 @@
             <div style="margin-top: 20px;">
                 <a href="/events/{{ $event->id }}/edit">Edit Event</a>
             </div>
+            <form action="/events/{{ $event->id }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button style="color: red; cursor: pointer;">
+                    Delete Event
+                </button>
+            </form>
         @endauth
     </div>
 @endsection
