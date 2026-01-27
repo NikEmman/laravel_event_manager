@@ -153,4 +153,39 @@ class EventTest extends TestCase
         $response->assertRedirect('/login');
         $this->assertDatabaseHas('events', ['id' => $event->id]);
     }
+    // Edit route tests
+    public function test_an_authenticated_user_can_see_the_edit_page()
+    {
+        $user = User::factory()->create();
+        $space = Space::create(['name' => 'Original Space', 'address' => '123 Lane']);
+
+        $event = Event::create([
+            'title' => 'Initial Title',
+            'description' => 'Initial Description',
+            'space_id' => $space->id,
+            'start_date' => now()->addDays(1),
+            'end_date' => now()->addDays(1)->addHours(2),
+        ]);
+
+        $response = $this->actingAs($user)->get("/events/{$event->id}/edit");
+
+        $response->assertStatus(200);
+        $response->assertSee('Initial Title');
+        $response->assertSee('Initial Description');
+        $response->assertSee('Original Space');
+    }
+    public function test_a_guest_cannot_see_the_edit_page()
+    {
+        $space = Space::create(['name' => 'Private Room', 'address' => 'Secret']);
+        $event = Event::create([
+            'title' => 'Secret Event',
+            'space_id' => $space->id,
+            'start_date' => now()->addDays(1),
+            'end_date' => now()->addDays(1)->addHours(1),
+        ]);
+
+        $response = $this->get("/events/{$event->id}/edit");
+
+        $response->assertRedirect('/login');
+    }
 }
