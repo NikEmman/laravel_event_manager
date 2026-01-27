@@ -7,7 +7,7 @@
 
     @if($events->isEmpty())
         <p>No events found. 
-            @auth <a href="/events/create">Create one?</a> @endauth
+            @auth <a href="/events/new">Create one?</a> @endauth
         </p>
     @else
         <div class="events-list">
