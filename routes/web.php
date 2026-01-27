@@ -25,6 +25,6 @@ Route::post('/login',[UserController::class,'login']);
 // Events crud routes
 // Routes are protected, only authed users can create edit delete events
 Route::middleware(['auth'])->group(function () {
-    Route::get('/events/create', [EventController::class, 'create']);
-    Route::post('/events/create', [EventController::class, 'store']);
+    Route::get('/events/new', [EventController::class, 'new-event']);
+    Route::post('/events/create', [EventController::class, 'create']);
 });
