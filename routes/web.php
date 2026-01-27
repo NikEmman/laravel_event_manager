@@ -29,6 +29,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/events/new', [EventController::class, 'new']);
     Route::post('/events/create', [EventController::class, 'create']);
     Route::delete('/events/{event}', [EventController::class, 'destroy']);
+    Route::get('/events/{event}/edit', [EventController::class, 'edit']);
+    Route::put('/events/{event}', [EventController::class, 'update']);
 
 });
 // Events public show route

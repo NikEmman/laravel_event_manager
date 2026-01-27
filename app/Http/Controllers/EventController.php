@@ -50,4 +50,24 @@ class EventController extends Controller
 
         return redirect('/')->with('success', 'Event deleted successfully!');
     }
+    public function edit(Event $event)
+    {
+        $spaces = Space::all();
+        return view('events.edit', ['event' => $event, 'spaces' => $spaces]);
+    }
+
+    public function update(Request $request, Event $event)
+    {
+        $incomingFields = $request->validate([
+            'title' => ['required', 'string', 'max:100'],
+            'description' => ['nullable', 'string'],
+            'space_id' => ['required', 'exists:spaces,id'],
+            'start_date' => ['required', 'date', 'after:today'],
+            'end_date' => ['required', 'date', 'after:start_date'],
+        ]);
+
+        $event->update($incomingFields);
+
+        return redirect("/events/{$event->id}")->with('success', 'Event updated successfully!');
+    }
 }
