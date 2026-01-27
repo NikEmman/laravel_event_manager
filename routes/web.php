@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\Event;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
-    return view('home');
+    $events = Event::all();
+    return view('home', ['events' => $events]);
 });
 // Register routes
 Route::get('/register', function () {
@@ -20,3 +22,9 @@ Route::get('/login', function () {
 });
 Route::post('/login',[UserController::class,'login']);
 
+// Events crud routes
+// Routes are protected, only authed users can create edit delete events
+Route::middleware(['auth'])->group(function () {
+    Route::get('/events/create', [EventController::class, 'create']);
+    Route::post('/events/create', [EventController::class, 'store']);
+});
