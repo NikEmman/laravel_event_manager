@@ -46,5 +46,5 @@ class UserController extends Controller
     }
 
     // This triggers if the name/password don't match the DB
-    return redirect('/signin')->with('failure', 'Invalid username or password.');}
+    return redirect('/login')->with('failure', 'Invalid username or password.');}
 }
