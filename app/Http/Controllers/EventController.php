@@ -35,4 +35,11 @@ public function create(Request $request)
     // Redirect back home with a success message
     return redirect('/')->with('success', 'Event created successfully!');
 }
+public function show(Event $event)
+{
+    // We load the 'space' relationship so we can show the address
+    $event->load('space');
+
+    return view('events.show', ['event' => $event]);
+}
 }

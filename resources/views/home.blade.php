@@ -13,7 +13,9 @@
         <div class="events-list">
             @foreach ($events as $event)
                 <div >
-                    <h3>{{ $event->title }}</h3>
+                    <h3>
+                        <a href="/events/{{ $event->id }}">{{ $event->title }}</a>
+                    </h3>
                     <p>{{ $event->description }}</p>
                     <small>
                         Starts: {{ $event->start_date }} | 

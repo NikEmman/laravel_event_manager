@@ -6,7 +6,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
-    $events = Event::all();
+    // Get the Events and their related spaces
+   $events = Event::with('space')->get();
     return view('home', ['events' => $events]);
 });
 // Register routes
@@ -27,4 +28,5 @@ Route::post('/login',[UserController::class,'login']);
 Route::middleware(['auth'])->group(function () {
     Route::get('/events/new', [EventController::class, 'new']);
     Route::post('/events/create', [EventController::class, 'create']);
+    Route::get('/events/{event}',[EventController::class,'show']);
 });
