@@ -4,10 +4,10 @@
 
 @section('content')
     <h1>All Events</h1>
-
+ @auth <a href="/events/new">Create an event</a> @endauth
     @if($events->isEmpty())
         <p>No events found. 
-            @auth <a href="/events/new">Create one?</a> @endauth
+            
         </p>
     @else
         <div class="events-list">

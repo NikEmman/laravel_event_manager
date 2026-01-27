@@ -26,5 +26,5 @@ Route::post('/login',[UserController::class,'login']);
 // Routes are protected, only authed users can create edit delete events
 Route::middleware(['auth'])->group(function () {
     Route::get('/events/new', [EventController::class, 'new']);
-    // Route::post('/events/create', [EventController::class, 'create']);
+    Route::post('/events/create', [EventController::class, 'create']);
 });
