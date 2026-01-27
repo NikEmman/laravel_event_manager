@@ -120,5 +120,37 @@ class EventTest extends TestCase
         $response->assertSee('Public Talk');
         $response->assertSee('Main St 1');
     }
+    // Delete route / action
+    public function test_an_authenticated_user_can_delete_an_event()
+    {
+        $user = User::factory()->create();
+        $space = Space::create(['name' => 'Test Space', 'address' => 'Test Ave']);
+        $event = Event::create([
+            'title' => 'Delete Me',
+            'space_id' => $space->id,
+            'start_date' => now()->addDays(1),
+            'end_date' => now()->addDays(1)->addHour(),
+        ]);
 
+        $response = $this->actingAs($user)->delete("/events/{$event->id}");
+
+        $response->assertRedirect('/');
+        $this->assertDatabaseMissing('events', ['id' => $event->id]);
+    }
+
+    public function test_a_guest_cannot_delete_an_event()
+    {
+        $space = Space::create(['name' => 'Test Space', 'address' => 'Test Ave']);
+        $event = Event::create([
+            'title' => 'Unsafe Event',
+            'space_id' => $space->id,
+            'start_date' => now()->addDays(1),
+            'end_date' => now()->addDays(1)->addHour(),
+        ]);
+
+        $response = $this->delete("/events/{$event->id}");
+
+        $response->assertRedirect('/login');
+        $this->assertDatabaseHas('events', ['id' => $event->id]);
+    }
 }
