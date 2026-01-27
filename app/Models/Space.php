@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Space extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+        'address',
+        
+    ];
 }
