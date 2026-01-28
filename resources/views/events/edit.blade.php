@@ -1,53 +1,24 @@
 @extends('app')
 
+@section('title', 'Edit Event: ' . $event->title)
+
 @section('content')
-    <h1>Edit Event: {{ $event->title }}</h1>
-
-    <form action="/events/{{ $event->id }}" method="POST">
-        @csrf
-        @method('PUT')
-
-        <div class="form-group">
-            <label>Title</label>
-            <input type="text" name="title" value="{{ old('title', $event->title) }}" required>
-            @error('title') <p style="color: red;">{{ $message }}</p> @enderror
+    <div class="max-w-2xl mx-auto bg-base-100 rounded-3xl p-8 shadow-sm border border-base-300">
+        {{-- Header --}}
+        <div class="mb-8">
+            <div class="flex items-center gap-2 text-warning mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span class="text-xs font-bold uppercase tracking-widest">Editing Mode</span>
+            </div>
+            <h1 class="text-3xl font-black">Edit Event</h1>
+            <p class="text-base-content/60 italic">Updating: {{ $event->title }}</p>
         </div>
 
-        <div class="form-group">
-            <label>Description</label>
-            <textarea name="description">{{ old('description', $event->description) }}</textarea>
-            @error('description') <p style="color: red;">{{ $message }}</p> @enderror
-        </div>
-
-        <div class="form-group">
-            <label>Space</label>
-            <select name="space_id" required>
-                @foreach($spaces as $space)
-                    <option value="{{ $space->id }}" {{ (old('space_id', $event->space_id) == $space->id) ? 'selected' : '' }}>
-                        {{ $space->name }}
-                    </option>
-                @endforeach
-            </select>
-            @error('space_id') <p style="color: red;">{{ $message }}</p> @enderror
-        </div>
-
-        <div class="form-group">
-            <label>Start Date & Time</label>
-            <input type="datetime-local" name="start_date"
-                value="{{ old('start_date', \Carbon\Carbon::parse($event->start_date)->format('Y-m-d\TH:i')) }}" required>
-            @error('start_date') <p style="color: red;">{{ $message }}</p> @enderror
-        </div>
-
-        <div class="form-group">
-            <label>End Date & Time</label>
-            <input type="datetime-local" name="end_date"
-                value="{{ old('end_date', \Carbon\Carbon::parse($event->end_date)->format('Y-m-d\TH:i')) }}" required>
-            @error('end_date') <p style="color: red;">{{ $message }}</p> @enderror
-        </div>
-
-        <div style="margin-top: 20px;">
-            <button type="submit">Update Event</button>
-            <a href="/events/{{ $event->id }}">Cancel</a>
-        </div>
-    </form>
+        {{-- Event Form Partial --}}
+        @include('partials._event_form')
+    </div>
 @endsection
