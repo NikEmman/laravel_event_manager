@@ -9,7 +9,7 @@
     <title>@yield('title', 'Event Manager')</title>
 </head>
 
-<body class="min-h-screen bg-base-200 font-sans antialiased">
+<body class="min-h-screen bg-base-200 font-sans">
 
     @include('partials._navbar')
 
