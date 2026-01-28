@@ -1,59 +1,103 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Event Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based application for managing events across different locations. This project features a full CRUD interface, user authentication, and a versioned JSON API.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 1. User Authentication & Authorization
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Public Access:** Guests can view the list of events and individual event details (Read-only).
+- **Authenticated Access:** Only logged-in users can access the dashboard to create, update, or delete events.
+- **Default Credentials:** The system is seeded with a test user:
+- **Name:** `Test User`
+- **Password:** `password`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. Event Management (CRUD)
 
-## Learning Laravel
+- **Create:** Dynamic form to select existing Spaces and set event schedules.
+- **Validation:** Strict validation on incoming data:
+- Title is required and capped at 100 characters.
+- `start_date` must be a future date.
+- `end_date` must occur after the `start_date`.
+- `space_id` must exist in the database.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Update:** Edit existing event details with pre-populated form data and validation.
+- **Delete:** Remove events.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 3. Versioned JSON API
 
-## Laravel Sponsors
+- **Endpoint:** `GET /api/v1/events`
+- **Logic:** Returns only upcoming events (where `start_date > now`).
+- **Structure:** Uses Laravel API Resources to provide a flattened JSON structure including space names and space addresses and formatted timestamps.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 4. UI
 
-### Premium Partners
+- **Styling:** The frontend is built using Tailwind CSS with the daisyUI component library for a clean and consistent interface.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## Installation Instructions
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 1. Clone the Project
 
-## Code of Conduct
+```bash
+git clone git@github.com:NikEmman/laravel_event_manager.git
+cd laravel_event_manager
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```
 
-## Security Vulnerabilities
+### 2. Install Dependencies
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+composer install
+npm install && npm run build
 
-## License
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 3. Environment Setup
+
+```bash
+cp .env.example .env
+php artisan key:generate
+
+```
+
+_Note: Configure your `.env` file with your local database credentials (DB_DATABASE, DB_USERNAME, DB_PASSWORD)._
+
+### 4. Database Migrations and Seeding
+
+This will create the necessary tables, 3 default spaces, 1 test user, and several sample events.
+
+```bash
+php artisan migrate:fresh --seed
+
+```
+
+### 5. Start the Application
+
+```bash
+php artisan serve
+
+```
+
+The application will be available at `http://localhost:8000`.
+
+---
+
+## Testing
+
+The project includes a comprehensive test suite covering Feature tests for both the Web interface and the API.
+
+To execute all tests, run:
+
+```bash
+php artisan test
+
+```
+
+The test suite covers:
+
+- Route protection (Guest vs. Authenticated).
+- Validation logic for date constraints.
+- Database integrity for CRUD operations.
+- API response structure and filtering logic.
