@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/events/{event}', [EventController::class, 'destroy']);
     Route::get('/events/{event}/edit', [EventController::class, 'edit']);
     Route::put('/events/{event}', [EventController::class, 'update']);
+    Route::post('/logout', [UserController::class, 'logout']);
 
 });
 // Events public show route
