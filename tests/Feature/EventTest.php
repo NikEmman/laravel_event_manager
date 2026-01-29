@@ -268,4 +268,25 @@ class EventTest extends TestCase
         $response->assertRedirect("/events/{$event->id}/edit");
         $response->assertSessionHasErrors(['title', 'end_date']);
     }
+
+    public function test_api_events_is_rate_limited_after_sixty_requests()
+    {
+        // Hit the API 60 times (limit set in AppServiceProvider)
+        for ($i = 0; $i < 60; $i++) {
+            $this->getJson('/api/v1/events')
+                ->assertStatus(200);
+        }
+
+        // The 61st request should be throttled
+        $response = $this->getJson('/api/v1/events');
+
+
+        $response->assertStatus(429);
+        $response->assertJson([
+            'message' => 'Too Many Attempts.',
+        ]);
+
+        // Optional: Check if the header tells us when to retry
+        $this->assertTrue($response->headers->has('Retry-After'));
+    }
 }

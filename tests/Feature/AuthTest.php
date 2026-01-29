@@ -179,5 +179,24 @@ class AuthTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_login_is_rate_limited_after_five_attempts()
+    {
+        // Attempt to login 5 times with wrong credentials
+        for ($i = 0; $i < 5; $i++) {
+            $this->post('/login', [
+                'email' => 'test@example.com',
+                'password' => 'wrong-password'
+            ]);
+        }
+
+        // The 6th attempt should hit the throttle
+        $response = $this->post('/login', [
+            'email' => 'test@example.com',
+            'password' => 'wrong-password'
+        ]);
+
+        $response->assertStatus(429); // 429 for Too Many Requests
+    }
+
 
 }

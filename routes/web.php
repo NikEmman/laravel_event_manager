@@ -21,8 +21,9 @@ Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/login', function () {
     return view('login');
 })->name('login');
-Route::post('/login', [UserController::class, 'login']);
 
+// Rate limit the login to avoid brute forcing
+Route::post('/login', [UserController::class, 'login'])->middleware('throttle:login');
 // Events 
 // Routes are protected, only authed users can create edit delete events
 Route::middleware(['auth'])->group(function () {
