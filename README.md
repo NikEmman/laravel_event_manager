@@ -30,7 +30,11 @@ A Laravel-based application for managing events across different locations. This
 - **Logic:** Returns only upcoming events (where `start_date > now`).
 - **Structure:** Uses Laravel API Resources to provide a flattened JSON structure including space names and space addresses and formatted timestamps.
 
-### 4. UI
+### 4. Rate limiter
+
+- **Throttle Middleware** Used to protect the `/login` path from brute force and the `/api/v1/news` path from bots. Limitations defined in `/app/Providers/AppServiceProvider.php`
+
+### 5. UI
 
 - **Styling:** The frontend is built using Tailwind CSS with the daisyUI component library for a clean and consistent interface.
 
